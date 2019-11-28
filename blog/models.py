@@ -1,14 +1,10 @@
 from django.db import models
 from django.utils import timezone
 from django.urls import reverse
-# SuperUserInformation
-# User: Jose
-# Email: training@pieriandata.com
-# Password: testpassword
 
-# Create your models here.
+
 class Post(models.Model):
-    author = models.ForeignKey('auth.User',on_delete=models.CASCADE)
+    author = models.ForeignKey('auth.User',on_delete=models.CASCADE)  # FK spre modelul auth.User (autentificarea userilor in admin)
     title = models.CharField(max_length=200)
     text = models.TextField()
     created_date = models.DateTimeField(default=timezone.now)
@@ -22,14 +18,14 @@ class Post(models.Model):
         return self.comments.filter(approved_comment=True)
 
     def get_absolute_url(self):
-        return reverse("post_detail",kwargs={'pk':self.pk})
+        return reverse("post_detail",kwargs={'pk':self.pk})  # Dupa ce creezi un post se intoarce pe pagina asta
 
     def __str__(self):
         return self.title
 
 
 class Comment(models.Model):
-    post = models.ForeignKey('blog.Post', related_name='comments',on_delete=models.CASCADE)
+    post = models.ForeignKey('blog.Post', related_name='comments',on_delete=models.CASCADE)  #Fk catre POst
     author = models.CharField(max_length=200)
     text = models.TextField()
     created_date = models.DateTimeField(default=timezone.now)
