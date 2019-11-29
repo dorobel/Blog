@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .models import Post, Comment
-from .forms import PostForm, CommentForm
+from .forms import PostForm, CommentForm, UserForm, UserProfileInfoForm
 
 from django.views.generic import (TemplateView,ListView,
                                   DetailView,CreateView,
@@ -10,7 +10,16 @@ from django.views.generic import (TemplateView,ListView,
 
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import authenticate, login, logout
+from django.http import HttpResponseRedirect, HttpResponse
+from django.urls import reverse
 
+
+# Extra Imports for the Login and Logout Capabilities
+
+
+    
+    
 # Create your views here.
 class AboutView(TemplateView):
     template_name = 'blog/about.html'
@@ -21,6 +30,10 @@ class PostListView(ListView):
 
     def get_queryset(self):
         return Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
+  
+    
+
+
 
 class PostDetailView(DetailView):
     model = Post
@@ -57,6 +70,9 @@ class DraftListView(LoginRequiredMixin,ListView):
 
     def get_queryset(self):
         return Post.objects.filter(published_date__isnull=True).order_by('created_date')
+
+
+
 
 
 #######################################
@@ -97,3 +113,36 @@ def comment_remove(request, pk):
     post_pk = comment.post.pk
     comment.delete()
     return redirect('post_detail', pk=post_pk)
+
+
+def logare(request):  # Formul e in login.html
+
+    if request.method == 'POST':
+        # First get the username and password supplied
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        # Django's built-in authentication function (user gets authenticated at this step/ login is not done yet!!!)
+        user = authenticate(username=username, password=password)
+
+        # If we have a user
+        if user:
+            #Check it the account is active
+            if user.is_active:
+                # Log the user in.
+                login(request,user)
+                # Send the user back to some page.
+                # In this case their homepage.
+                return redirect('post_list')
+            else:
+                # If account is not active:
+                return HttpResponse("Your account is not active.")
+        else: # authenticate is false, wrong user and/or password
+            print("Someone tried to login and failed.")
+            print("They used username: {} and password: {}".format(username,password))
+            return HttpResponse("Invalid login details supplied.")
+
+    else:
+        #Nothing has been provided for username or password.
+        return render(request, 'blog/logare.html', {})
+    

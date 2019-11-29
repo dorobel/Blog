@@ -1,10 +1,12 @@
 from django.db import models
 from django.utils import timezone
 from django.urls import reverse
+from django.contrib.auth.models import User
+
 
 
 class Post(models.Model):
-    author = models.ForeignKey('auth.User',on_delete=models.CASCADE)  # FK spre modelul auth.User (autentificarea userilor in admin)
+    author = models.ForeignKey('auth.User',on_delete=models.CASCADE)  # FK spre modelul auth.User (autentificarea userilor in admin) # FK-ul este cel ce  umple capul Authod cu valori selectabile
     title = models.CharField(max_length=200)
     text = models.TextField()
     created_date = models.DateTimeField(default=timezone.now)
@@ -40,3 +42,18 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.text
+
+
+class UserProfileInfo(models.Model):
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE)  # Check User model from django.contrib.auth
+
+    # Add any additional attributes you want
+    portfolio_site = models.URLField(blank=True)
+    # pip install pillow to use this!
+    # Optional: pip install pillow --global-option="build_ext" --global-option="--disable-jpeg"
+    profile_pic = models.ImageField(upload_to='FifthApp/profile_pics',blank=True)
+
+    def __str__(self):
+        # Built-in attribute of django.contrib.auth.models.User !
+        return self.user.username

@@ -33,8 +33,7 @@
             <a class="nav-item nav-link" href="{% url 'logout' %}">Log out</a>
             <a >Welcome: {{ user.username }}</a>
           {% else %}
-            <a class="nav-item nav-link" href="{% url 'login' %}" aria-label="Login">
-              <span class="fa fa-user" aria-hidden="true"></span></a>
+             <a class="nav-item nav-link" href="{% url 'logare' %}">Login</a>
           {% endif %}
         </div>
       </div>
