@@ -16,11 +16,13 @@ class Post(models.Model):
         self.published_date = timezone.now()
         self.save()
 
-    def approve_comments(self):
+    def approve_comments(self):  #afiseaza lista de commentarii aprobate
         return self.comments.filter(approved_comment=True)
 
     def get_absolute_url(self):
         return reverse("post_detail",kwargs={'pk':self.pk})  # Dupa ce creezi un post se intoarce pe pagina asta
+    # Spre deosebire de expl cu scoala, aici trebuie sa pui linkul de redirect (post_detail); si asta pt ca atunci cand salvezi formul trebuie sa intoarca pk-ul
+    # postului care nu e valabil decat dupa SAVE!
 
     def __str__(self):
         return self.title
@@ -44,16 +46,9 @@ class Comment(models.Model):
         return self.text
 
 
-class UserProfileInfo(models.Model):
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)  # Check User model from django.contrib.auth
 
-    # Add any additional attributes you want
-    portfolio_site = models.URLField(blank=True)
-    # pip install pillow to use this!
-    # Optional: pip install pillow --global-option="build_ext" --global-option="--disable-jpeg"
-    profile_pic = models.ImageField(upload_to='FifthApp/profile_pics',blank=True)
 
-    def __str__(self):
-        # Built-in attribute of django.contrib.auth.models.User !
-        return self.user.username
+
+
+
