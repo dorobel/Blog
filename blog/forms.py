@@ -65,3 +65,9 @@ class UserForm(forms.ModelForm):
         model = User                                # User model https://docs.djangoproject.com/en/2.2/ref/contrib/auth/  raw pwds are not accepted
         fields = ('username','email','password')
 
+
+
+
+
+
+

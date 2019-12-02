@@ -24,39 +24,46 @@ class AboutView(TemplateView):
 
 
 class PostListView(ListView):
+    #template_name='blog/post_list.html'
     model = Post
-
+    
     def get_queryset(self):
         return Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
-  
+    
+    
+#poti face filtrare si in HTML 
     
 class PostDetailView(DetailView):
+    #template_name='blog/post_detail.html'
     model = Post
 
 
-class CreatePostView(LoginRequiredMixin,CreateView):
+class CreatePostView(LoginRequiredMixin,CreateView):  #Automatically looks for post_form.html
+    #template_name='blog/post_form.html'
     login_url = '/login/'
-    redirect_field_name = 'blog/post_detail.html'
+    redirect_field_name = 'blog/post.html'
 
     form_class = PostForm
     model = Post
 
 
 class PostUpdateView(LoginRequiredMixin,UpdateView):
+    #template_name='blog/post_form.html'
     login_url = '/login/'
     redirect_field_name = 'blog/post_detail.html'
     
     form_class = PostForm
-
     model = Post
 
 
-class PostDeleteView(LoginRequiredMixin,DeleteView):
+class PostDeleteView(LoginRequiredMixin,DeleteView): #import methods from 2 clases
+    #template_name='blog/post_detail.html'
     model = Post
     success_url = reverse_lazy('post_list')
 
 
 class DraftListView(LoginRequiredMixin,ListView):
+    #template_name='blog/post_draft_list.html'
     login_url = '/login/'
     redirect_field_name = 'blog/post_draft_list.html'
 
@@ -138,3 +145,17 @@ def logare(request):  # Formul e in login.html
         #Nothing has been provided for username or password.
         return render(request, 'blog/logare.html', {})
     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
