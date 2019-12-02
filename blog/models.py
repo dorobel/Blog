@@ -16,7 +16,7 @@ class Post(models.Model):
         self.published_date = timezone.now()
         self.save()
 
-    def approve_comments(self):  #afiseaza lista de commentarii aprobate
+    def approve_comments(self):  #afiseaza lista de commentarii aprobate -- filter
         return self.comments.filter(approved_comment=True)
 
     def get_absolute_url(self):

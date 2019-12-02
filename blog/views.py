@@ -23,22 +23,34 @@ class AboutView(TemplateView):
     template_name = 'blog/about.html'
 
 
-class PostListView(ListView):
-    #template_name='blog/post_list.html'
+class PostListView(ListView):              # Template default suffix is _list
+    #template_name='blog/post_list.html'   # Adds object_list to the context.
     model = Post
     
     def get_queryset(self):
         return Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
-    
-    
+
+'''    
+Se poate scrie si asa:
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['post_list'] = Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
+        return context
+'''
+   
+       
 #poti face filtrare si in HTML 
     
-class PostDetailView(DetailView):
+class PostDetailView(DetailView):                # Template default suffix is _detail.
     #template_name='blog/post_detail.html'
     model = Post
+'''
+ If context_object_name is not set, the context name will be constructed from the model_name of the model that the queryset is composed from.
+ For example, the model Article would have context object named 'article'
+''' 
 
-
-class CreatePostView(LoginRequiredMixin,CreateView):  #Automatically looks for post_form.html
+class CreatePostView(LoginRequiredMixin,CreateView):  # Template default suffix is '_form'
     #template_name='blog/post_form.html'
     login_url = '/login/'
     redirect_field_name = 'blog/post.html'
@@ -47,8 +59,8 @@ class CreatePostView(LoginRequiredMixin,CreateView):  #Automatically looks for p
     model = Post
 
 
-class PostUpdateView(LoginRequiredMixin,UpdateView):
-    #template_name='blog/post_form.html'
+class PostUpdateView(LoginRequiredMixin,UpdateView):  # Template default suffix is '_form'
+    #template_name='blog/post_form.html' 
     login_url = '/login/'
     redirect_field_name = 'blog/post_detail.html'
     
@@ -56,13 +68,13 @@ class PostUpdateView(LoginRequiredMixin,UpdateView):
     model = Post
 
 
-class PostDeleteView(LoginRequiredMixin,DeleteView): #import methods from 2 clases
-    #template_name='blog/post_detail.html'
+class PostDeleteView(LoginRequiredMixin,DeleteView):  # Template default suffix is '_confirm_delete'
+    #template_name='blog/post_confirm_delete.html'
     model = Post
     success_url = reverse_lazy('post_list')
 
 
-class DraftListView(LoginRequiredMixin,ListView):
+class DraftListView(LoginRequiredMixin,ListView):  #Default suffix is _list.
     #template_name='blog/post_draft_list.html'
     login_url = '/login/'
     redirect_field_name = 'blog/post_draft_list.html'
