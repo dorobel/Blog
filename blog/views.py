@@ -39,7 +39,6 @@ Se poate scrie si asa:
         return context
 '''
    
-       
 #poti face filtrare si in HTML 
     
 class PostDetailView(DetailView):                # Template default suffix is _detail.
@@ -74,7 +73,7 @@ class PostDeleteView(LoginRequiredMixin,DeleteView):  # Template default suffix 
     success_url = reverse_lazy('post_list')
 
 
-class DraftListView(LoginRequiredMixin,ListView):  #Default suffix is _list.
+class DraftListView(LoginRequiredMixin,ListView):      # Default suffix is _list.
     #template_name='blog/post_draft_list.html'
     login_url = '/login/'
     redirect_field_name = 'blog/post_draft_list.html'
@@ -90,20 +89,39 @@ class DraftListView(LoginRequiredMixin,ListView):  #Default suffix is _list.
 ## Functions that require a pk match ##
 #######################################
 
+# PK-ul este argument ce vine cu requestul
+ 
+ 
+# get_object_or_404()
+# Calls get() on a given model manager, but it raises Http404 instead of the model’s DoesNotExist exception.
+ 
 @login_required
-def post_publish(request, pk):
-    post = get_object_or_404(Post, pk=pk)
+def post_publish(request, pk):                    # does not have a render function, just does what is requested
+    post = get_object_or_404(Post, pk=pk)   # POst model   
     post.publish()
     return redirect('post_detail', pk=pk)
 
 @login_required
+def comment_approve(request, pk):                  # does not have a render function, just does what is requested
+    comment = get_object_or_404(Comment, pk=pk)
+    comment.approve()
+    return redirect('post_detail', pk=comment.post.pk)  # FK la Post
+
+@login_required
+def comment_remove(request, pk):                   # does not have a render function, just does what is requested 
+    comment = get_object_or_404(Comment, pk=pk)
+    post_pk = comment.post.pk   # salveaza post PK  pt a putea returna postul mia jos dupa stergerea commentului
+    comment.delete()
+    return redirect('post_detail', pk=post_pk)
+
+##@login_required
 def add_comment_to_post(request, pk):
     post = get_object_or_404(Post, pk=pk)
     if request.method == "POST":
         form = CommentForm(request.POST)
         if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = post
+            comment = form.save(commit=False)   # commentul nu e salvat
+            comment.post = post                 # leaga commentul de post (vezi modelul comment, are fk la post)!!!!!
             comment.save()
             return redirect('post_detail', pk=post.pk)
     else:
@@ -111,19 +129,10 @@ def add_comment_to_post(request, pk):
     return render(request, 'blog/comment_form.html', {'form': form})
 
 
-@login_required
-def comment_approve(request, pk):
-    comment = get_object_or_404(Comment, pk=pk)
-    comment.approve()
-    return redirect('post_detail', pk=comment.post.pk)
 
 
-@login_required
-def comment_remove(request, pk):
-    comment = get_object_or_404(Comment, pk=pk)
-    post_pk = comment.post.pk
-    comment.delete()
-    return redirect('post_detail', pk=post_pk)
+
+
 
 
 def logare(request):  # Formul e in login.html
