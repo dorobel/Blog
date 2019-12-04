@@ -3,24 +3,21 @@
 <html>
   <head>
     <title>Blog Project</title>
-    <!-- Latest compiled and minified CSS -->
+
+    <link rel="stylesheet" href="{% static "css/blog.css" %}">
     <link rel="stylesheet" href="{% static "css/bootstrap.min.css" %}" >
 
+    <link rel="stylesheet" href="{% static "css/font-awesome.min.css"%}" >
 
-    {# MEDIUM STYLE EDITOR#}
+    <link rel="stylesheet" href="{% static "css/medium-editor.min.css"%}"  type="text/css" media="screen" charset="utf-8">
+	<script src="{% static "js/medium-editor.min.js" %}"></script>
+
+	<script src="{% static "jquery.js" %}"></script>
     
-    <script src="js/bootstrap.min.js"></script>
+	
+    {# Fonts #}
     
-    <script src="//cdn.jsdelivr.net/medium-editor/latest/js/medium-editor.min.js"></script>
-	<link rel="stylesheet" href="//cdn.jsdelivr.net/medium-editor/latest/css/medium-editor.min.css" type="text/css" media="screen" charset="utf-8">
-	
-	
-    {# Custom CSS#}
-    <link rel="stylesheet" href="{% static "css/blog.css" %}">
-	
-    {# Fonts#}
-    
-    <link href="https://fonts.googleapis.com/css?family=Sulphur+Point&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Anton&display=swap" rel="stylesheet">
     
   </head>
 
@@ -41,7 +38,8 @@
             <a class="nav-item nav-link" href="{% url 'logout' %}">Log out</a>
             <a class="nav-item nav-link" >Welcome: {{ user.username }}</a>
           {% else %}
-             <a class="nav-item nav-link" href="{% url 'logare' %}">Login</a>
+             <a class="nav-item nav-link" href="{% url 'logare' %}" aria-label="Login">
+              <i  class="fa fa-user" aria-hidden="true"></i></a>
           {% endif %}
         </div>
       </div>
@@ -61,7 +59,6 @@
               </div>
           </div>
 
-    {# SCRIPTS#}
-	<script src="{% static "jquery.js" %}"></script>
+	
   </body>
 </html>

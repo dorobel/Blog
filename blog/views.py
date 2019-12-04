@@ -93,7 +93,7 @@ class DraftListView(LoginRequiredMixin,ListView):      # Default suffix is _list
  
  
 # get_object_or_404()
-# Calls get() on a given model manager, but it raises Http404 instead of the model’s DoesNotExist exception.
+# Calls get() on a given model manager, but it raises Http404 instead of the model's DoesNotExist exception.
  
 @login_required
 def post_publish(request, pk):                    # does not have a render function, just does what is requested
