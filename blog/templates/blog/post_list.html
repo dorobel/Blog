@@ -1,18 +1,24 @@
 {% extends 'blog/base.html' %}
 
 {% block content %}
-<div class="centerstage">
+
+<div class="centerstage">  <!-- vezi blog.css -->
 
 
     {% for post in post_list %}
         <div class="post">
 
-            <h1><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h1>
+            <h1><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h1>  
             <div class="date">
                 <p>Published on: {{ post.published_date|date:"D M Y"}}</p>
             </div>
             <a href="{% url 'post_detail' pk=post.pk %}">Comments: {{ post.approve_comments.count }}</a>  
-             <!-- approve_comments este metoda care listeaza numele commentariile aprobate  --> 
+            
+             <!-- approve_comments este metoda care listeaza numele commentariile aprobate .
+              The approve_comments method runs this query:
+			  Post.objects.filter(comments__approved_comment=True)
+			  By adding the count method at the end, it then runs this query instead:
+			  Post.objects.filter(comments__approved_comment=True).count() --> 
             
              </div>
     {% endfor %}

@@ -19,7 +19,7 @@ class Post(models.Model):
     def approve_comments(self):  #afiseaza lista de commentarii aprobate -- filter
         return self.comments.filter(approved_comment=True)
 
-    def get_absolute_url(self):
+    def get_absolute_url(self):                    
         return reverse("post_detail",kwargs={'pk':self.pk})  # Dupa ce creezi un post se intoarce pe pagina asta
     # Spre deosebire de expl cu scoala, aici trebuie sa pui linkul de redirect (post_detail); si asta pt ca atunci cand salvezi formul trebuie sa intoarca pk-ul
     # postului care nu e valabil decat dupa SAVE!

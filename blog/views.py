@@ -24,10 +24,12 @@ class AboutView(TemplateView):
 
 
 class PostListView(ListView):              # Template default suffix is _list
-    #template_name='blog/post_list.html'   # Adds object_list to the context.
-    model = Post
-    
-    def get_queryset(self):
+    #template_name='blog/post_list.html'   
+    model = Post                           # You can avoid context_object_name too. The default behaviour of ListView is to populate the template with context name object_list (vezi get_context_object_name)             
+ 
+ # Obiectele Post sunt intoarse in pagina impreuna cu PK-ul lor
+     
+    def get_queryset(self):                # Get the list of items for this view. This must be an iterable and may be a queryset (in which queryset-specific behavior will be enabled).
         return Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
 
 '''    
@@ -37,17 +39,17 @@ Se poate scrie si asa:
         context = super().get_context_data(**kwargs)
         context['post_list'] = Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
         return context
+        
+# get_context_object_name(object_list) Return the context variable name that will be used to contain the list of data that this view is manipulating. If object_list is a queryset of Django objects 
+and context_object_name is not set, the context name will be the model_name of the model that the queryset is composed from, with postfix '_list' appended. 
+For example, the model Article would have a context object named article_list. => Cum metoda vezi post_list in HTML
 '''
    
-#poti face filtrare si in HTML 
+# Poti face filtrare si in HTML la rezultatele deja intoarse de view
     
 class PostDetailView(DetailView):                # Template default suffix is _detail.
     #template_name='blog/post_detail.html'
     model = Post
-'''
- If context_object_name is not set, the context name will be constructed from the model_name of the model that the queryset is composed from.
- For example, the model Article would have context object named 'article'
-''' 
 
 class CreatePostView(LoginRequiredMixin,CreateView):  # Template default suffix is '_form'
     #template_name='blog/post_form.html'
