@@ -76,7 +76,7 @@ class PostDeleteView(LoginRequiredMixin,DeleteView):  # Template default suffix 
 
 
 class DraftListView(LoginRequiredMixin,ListView):      # Default suffix is _list.
-    #template_name='blog/post_draft_list.html'
+    template_name='blog/post_draft_list.html'
     login_url = '/login/'
     redirect_field_name = 'blog/post_draft_list.html'
 
