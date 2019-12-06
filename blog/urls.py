@@ -17,4 +17,5 @@ urlpatterns = [
     path('comment/<int:pk>/approve/', views.comment_approve, name='comment_approve'),
     path('comment/<int:pk>/remove/', views.comment_remove, name='comment_remove'),
     path('logare/',views.logare,name='logare'),
+    path('logout/',views.user_logout,name='logout'),
 ]

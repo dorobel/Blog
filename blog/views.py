@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .models import Post, Comment
-from .forms import PostForm, CommentForm, UserForm
+from .forms import PostForm, CommentForm
 
 from django.views.generic import (TemplateView,ListView,
                                   DetailView,CreateView,
@@ -11,9 +11,7 @@ from django.views.generic import (TemplateView,ListView,
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
-from django.http import HttpResponseRedirect, HttpResponse
-from django.urls import reverse
-
+from django.http import HttpResponse
 
 # Extra Imports for the Login and Logout Capabilities
 
@@ -27,7 +25,7 @@ class PostListView(ListView):              # Template default suffix is _list
     #template_name='blog/post_list.html'   
     model = Post                           # You can avoid context_object_name too. The default behaviour of ListView is to populate the template with context name object_list (vezi get_context_object_name)             
  
- # Obiectele Post sunt intoarse in pagina impreuna cu PK-ul lor
+# Obiectele Post sunt intoarse in pagina impreuna cu PK-ul lor
      
     def get_queryset(self):                # Get the list of items for this view. This must be an iterable and may be a queryset (in which queryset-specific behavior will be enabled).
         return Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
@@ -167,7 +165,12 @@ def logare(request):  # Formul e in login.html
         return render(request, 'blog/logare.html', {})
     
 
-
+@login_required
+def user_logout(request):
+    # Log out the user.
+    logout(request)
+    # Return to homepage.
+    return redirect('post_list')
 
 
 
