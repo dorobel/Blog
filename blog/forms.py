@@ -41,6 +41,23 @@ class SignupFormName(forms.ModelForm):
         model= User
         fields=('first_name','last_name','email')              
 
+
+
+Poti seta si valorile default HTML (SimplesocialProject):
+e.g <input type="email" name="useremail" value="Email here">
+
+
+class UserCreateForm(UserCreationForm):
+    
+    class Meta:
+        fields = ("username", "email", "password1", "password2")
+        model = get_user_model()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["username"].label = "Display name"
+        self.fields["email"].label = "Email address"
+
                                                                                            
 '''    
 
