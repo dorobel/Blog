@@ -23,7 +23,8 @@ class AboutView(TemplateView):
 
 class PostListView(ListView):              # Template default suffix is _list
     #template_name='blog/post_list.html'   
-    model = Post                           # You can avoid context_object_name too. The default behaviour of ListView is to populate the template with context name object_list (vezi get_context_object_name)             
+    model = Post                           # You can avoid context_object_name too. 
+                                           # The default behaviour of ListView is to populate the template with context name object_list (vezi get_context_object_name)             
  
 # Obiectele Post sunt intoarse in pagina impreuna cu PK-ul lor
      
