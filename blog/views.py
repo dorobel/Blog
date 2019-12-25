@@ -132,8 +132,6 @@ def add_comment_to_post(request, pk):
 
 
 
-
-
 def logare(request):  # Formul e in login.html
 
     if request.method == 'POST':
