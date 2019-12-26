@@ -1,7 +1,10 @@
 {% extends "blog/base.html" %}
 {% block content %}
-  <form action="" method="post">{% csrf_token %}
+
+  <form method="post">  <!-- Chiar dc nu listezi datele unui form butonul trebuie inclus intr-un form pt a intoarce confirmarea "POST" -->
+  	{% csrf_token %}
     <p>Are you sure you want to delete "{{ object }}"?</p>
     <input class='btn btn-danger' type="submit" value="Confirm" />
   </form>
+  
 {% endblock %}

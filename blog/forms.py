@@ -2,7 +2,6 @@ from django import forms
 from .models import Post, Comment
 from django.contrib.auth.models import User
 
-
 '''
 Widgeturile sunt legate de clase CSS/Bootstrap
 
@@ -19,7 +18,28 @@ class PostForm(forms.ModelForm):
             'text': forms.Textarea(attrs={'class': 'editable medium-editor-textarea postcontent'}),
         }
         
+class CommentForm(forms.ModelForm):
+
+    class Meta:
+        model = Comment
+        fields = ('author', 'text',)
+
+        widgets = {
+            'author': forms.TextInput(attrs={'class': 'textinputclass'}),
+            'text': forms.Textarea(attrs={'class': 'editable medium-editor-textarea'}),
+        }
+
+
+class UserForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput())  
+
+    class Meta():
+        model = User                                # User model https://docs.djangoproject.com/en/2.2/ref/contrib/auth/  raw pwds are not accepted
+        fields = ('username','email','password')
+           
 '''
+# Widgets:
+
 class SignupFormName(forms.ModelForm):   
     first_name = forms.CharField(label='Your name',max_length=40, widget=forms.TextInput(attrs={'class': 'form-control'}))  
     last_name = forms.CharField(label='Last name',max_length=40, widget=forms.TextInput(attrs={'class': 'form-control'}))
@@ -61,26 +81,6 @@ class UserCreateForm(UserCreationForm):
                                                                                            
 '''    
 
-class CommentForm(forms.ModelForm):
-
-    class Meta:
-        model = Comment
-        fields = ('author', 'text',)
-
-        widgets = {
-            'author': forms.TextInput(attrs={'class': 'textinputclass'}),
-            'text': forms.Textarea(attrs={'class': 'editable medium-editor-textarea'}),
-        }
-
-
-
-
-class UserForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput())   # vezi si L3/forms, am setat un widget html pt prezentare
-
-    class Meta():
-        model = User                                # User model https://docs.djangoproject.com/en/2.2/ref/contrib/auth/  raw pwds are not accepted
-        fields = ('username','email','password')
 
 
 

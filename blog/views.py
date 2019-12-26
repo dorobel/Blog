@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .models import Post, Comment
-from .forms import PostForm, CommentForm
+from .forms import PostForm, CommentForm, UserForm
 
 from django.views.generic import (TemplateView,ListView,
                                   DetailView,CreateView,
@@ -13,23 +13,16 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
 
-# Extra Imports for the Login and Logout Capabilities
 
 
-# Create your views here.
-class AboutView(TemplateView):
-    template_name = 'blog/about.html'
-
-
-class PostListView(ListView):              # Template default suffix is _list
-    #template_name='blog/post_list.html'   
-    model = Post                           # You can avoid context_object_name too. 
-                                           # The default behaviour of ListView is to populate the template with context name object_list (vezi get_context_object_name)             
- 
-# Obiectele Post sunt intoarse in pagina impreuna cu PK-ul lor
-     
-    def get_queryset(self):                # Get the list of items for this view. This must be an iterable and may be a queryset (in which queryset-specific behavior will be enabled).
-        return Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
+class PostListView(ListView):              # Template default suffix is _list (post_list.html)
+    model = Post                            
+          
+    def get_queryset(self):               
+        return Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')  #LTE -- less than equal
+    
+# ListViews will populate the result from get_queryset() to populate the template context. 
+# Model Post will have a context object post_list (in HTML)
 
 '''    
 Se poate scrie si asa:
@@ -39,31 +32,22 @@ Se poate scrie si asa:
         context['post_list'] = Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
         return context
         
-# get_context_object_name(object_list) Return the context variable name that will be used to contain the list of data that this view is manipulating. If object_list is a queryset of Django objects 
-and context_object_name is not set, the context name will be the model_name of the model that the queryset is composed from, with postfix '_list' appended. 
-For example, the model Article would have a context object named article_list. => Cum metoda vezi post_list in HTML
-'''
-   
 # Poti face filtrare si in HTML la rezultatele deja intoarse de view
-    
+'''
+
 class PostDetailView(DetailView):                # Template default suffix is _detail.
     #template_name='blog/post_detail.html'
     model = Post
 
 class CreatePostView(LoginRequiredMixin,CreateView):  # Template default suffix is '_form'
     #template_name='blog/post_form.html'
-    login_url = '/login/'
-    redirect_field_name = 'blog/post.html'
-
     form_class = PostForm
     model = Post
 
+# Fara LoginRequiredMixin oricine poate vedea pagina dc are linkul!
 
 class PostUpdateView(LoginRequiredMixin,UpdateView):  # Template default suffix is '_form'
     #template_name='blog/post_form.html' 
-    login_url = '/login/'
-    redirect_field_name = 'blog/post_detail.html'
-    
     form_class = PostForm
     model = Post
 
@@ -76,29 +60,26 @@ class PostDeleteView(LoginRequiredMixin,DeleteView):  # Template default suffix 
 
 class DraftListView(LoginRequiredMixin,ListView):      # Default suffix is _list.
     template_name='blog/post_draft_list.html'
-    login_url = '/login/'
-    redirect_field_name = 'blog/post_draft_list.html'
-
     model = Post
 
     def get_queryset(self):
         return Post.objects.filter(published_date__isnull=True).order_by('created_date')
 
+class AboutView(TemplateView):
+    template_name = 'blog/about.html'
 
 
 #######################################
-## Functions that require a pk match ##
-#######################################
-
 # PK-ul este argument ce vine cu requestul
- 
  
 # get_object_or_404()
 # Calls get() on a given model manager, but it raises Http404 instead of the model's DoesNotExist exception.
- 
+ #######################################
+
+
 @login_required
 def post_publish(request, pk):                    # does not have a render function, just does what is requested
-    post = get_object_or_404(Post, pk=pk)   # POst model   
+    post = get_object_or_404(Post, pk=pk)   # Post model   
     post.publish()
     return redirect('post_detail', pk=pk)
 
@@ -111,18 +92,17 @@ def comment_approve(request, pk):                  # does not have a render func
 @login_required
 def comment_remove(request, pk):                   # does not have a render function, just does what is requested 
     comment = get_object_or_404(Comment, pk=pk)
-    post_pk = comment.post.pk   # salveaza post PK  pt a putea returna postul mia jos dupa stergerea commentului
+    post_pk = comment.post.pk   # salveaza post PK  pt a putea returna postul mai jos dupa stergerea commentului
     comment.delete()
     return redirect('post_detail', pk=post_pk)
 
-##@login_required
 def add_comment_to_post(request, pk):
     post = get_object_or_404(Post, pk=pk)
     if request.method == "POST":
         form = CommentForm(request.POST)
         if form.is_valid():
-            comment = form.save(commit=False)   # commentul nu e salvat
-            comment.post = post                 # leaga commentul de post (vezi modelul comment, are fk la post)!!!!!
+            comment = form.save(commit=False)   # the first save just saves the results of the form to that variable 
+            comment.post = post                 # leaga commentul de post prin FK (vezi modelul comment, are coloana post)! Comment.post= titlul luat mai sus (are pk-ul din get_object_or_404)
             comment.save()
             return redirect('post_detail', pk=post.pk)
     else:
@@ -130,7 +110,26 @@ def add_comment_to_post(request, pk):
     return render(request, 'blog/comment_form.html', {'form': form})
 
 
+def register(request):
 
+    registered = False
+
+    if request.method == 'POST':
+        user_form = UserForm(data=request.POST)
+
+        if user_form.is_valid() :
+            user = user_form.save()             #the first save just saves the results of the form to that variable user
+            user.set_password(user.password)
+            user.save()
+            
+            registered = True
+        else:
+            print(user_form.errors)
+    else:
+        # Was not an HTTP post so we just render the forms as blank.
+        user_form = UserForm()
+
+    return render(request,'blog/registration.html', {'user_form':user_form,'registered':registered})
 
 def logare(request):  # Formul e in login.html
 
