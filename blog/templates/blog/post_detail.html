@@ -37,7 +37,7 @@
   
   <div class="container">
 
-  {% for commentvar in post.comments.all %}
+  {% for commentvar in post.comments.all %}  <!-- Model Post | comments "related_name-ul" -->
   <br>
       {% if user.is_authenticated or commentvar.approved_comment %} <!-- daca userul e autentificat sau dc comment(variable).approved_comment este aprobat afiseaza : -->
               {{ commentvar.created_date }}

@@ -12,6 +12,7 @@ class Post(models.Model):
     created_date = models.DateTimeField(default=timezone.now)
     published_date = models.DateTimeField(blank=True, null=True)
     #comments este "related_name-ul" de mai jos
+    # Poti folosi post.comments.all pt a afisa toate commenturile unui post (vezsi post_detail.html)
     # In oracle un astfel de select ar fi :
     #  select d.departments from employees e join departments d where e.name='John'
     def publish(self):
@@ -33,7 +34,7 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    post = models.ForeignKey('blog.Post', related_name='comments',on_delete=models.CASCADE)  #Fk catre POst ...din ce vad in admin se duce la titlu
+    post = models.ForeignKey('blog.Post', related_name='comments',on_delete=models.CASCADE)  # related_name -- vezi mai sus! Fk catre POst (din ce vad in admin se duce la titlu)
     author = models.CharField(max_length=200)
     text = models.TextField()
     created_date = models.DateTimeField(default=timezone.now)
