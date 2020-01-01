@@ -20,7 +20,8 @@ class PostListView(ListView):              # Template default suffix is _list (p
           
     def get_queryset(self):               
         return Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')  #LTE -- less than equal
-    
+                   #objects
+                   
 # ListViews will populate the result from get_queryset() to populate the template context. 
 # Model Post will have a context object post_list (in HTML)
 
