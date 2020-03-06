@@ -12,15 +12,12 @@ from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponse
-
+from django.contrib.auth.models import User as User
 
 
 class PostListView(ListView):              # Template default suffix is _list (post_list.html)
     model = Post                            
           
-    def get_queryset(self):               
-        return Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')  #LTE -- less than equal
-                   #objects
                    
 # ListViews will populate the result from get_queryset() to populate the template context. 
 # Model Post will have a context object post_list (in HTML)
@@ -44,6 +41,8 @@ class CreatePostView(LoginRequiredMixin,CreateView):  # Template default suffix 
     #template_name='blog/post_form.html'
     form_class = PostForm
     model = Post
+    #success_url = reverse_lazy('post_list')
+    
 
 # Fara LoginRequiredMixin oricine poate vedea pagina dc are linkul!
 

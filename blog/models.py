@@ -29,6 +29,9 @@ class Post(models.Model):
     # creare post: reverse face redirect dupa ce ai salvat formul (doar dupa salvarea formului un post are pk)
     # list posturi: nu ai neparat nevoie de post_detail pt ca e inclus in href="{% url 'post_detail' pk=post.pk %} doar pk-ul este intors (pk=post.pk)
 
+    #Always return an HttpResponseRedirect after successfully dealing with POST data. This prevents data from being posted twice if a
+    #user hits the Back button. ==>create post 
+    
     def __str__(self):
         return self.title
 
