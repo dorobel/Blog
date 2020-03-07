@@ -96,12 +96,31 @@ def comment_remove(request, pk):                   # does not have a render func
     comment.delete()
     return redirect('post_detail', pk=post_pk)
 
+
+'''
+Django will prevent any attempt to save an incomplete model, so if the model does not allow the missing fields to be empty,
+ and does not provide a default value for the missing fields, any attempt to save() a ModelForm with missing fields will fail.
+To avoid this failure, you must instantiate your model with initial values for the missing, but required fields:
+
+author = Author(title='Mr')
+form = PartialAuthorForm(request.POST, instance=author)
+form.save()
+
+Alternatively, you can use save(commit=False) and manually set any extra required fields:
+
+form = PartialAuthorForm(request.POST)
+author = form.save(commit=False)
+author.title = 'Mr'
+author.save()
+
+In expl de mai jos 'post' e un camp mandatory ce nu apare in formul randat pe pagina!
+'''
 def add_comment_to_post(request, pk):
     post = get_object_or_404(Post, pk=pk)
     if request.method == "POST":
         form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)   # the first save just saves the results of the form to that variable 
+        if form.is_valid():                     #If you call save() with commit=False, then it will return an object that hasn't yet been saved to the database.
+            comment = form.save(commit=False)   # the first save just saves the results of the form in memory without commiting to DB
             comment.post = post                 # leaga commentul de post prin FK (vezi modelul comment, are coloana post)! Comment.post= titlul luat mai sus (are pk-ul din get_object_or_404)
             comment.save()
             return redirect('post_detail', pk=post.pk)
