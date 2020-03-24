@@ -22,6 +22,7 @@ class PostListView(ListView):              # Template default suffix is _list (p
 # ListViews will populate the result from get_queryset() to populate the template context. 
 # Model Post will have a context object post_list (in HTML)
 
+
 '''    
 Se poate scrie si asa:
 
